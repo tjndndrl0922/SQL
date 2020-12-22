@@ -24,9 +24,11 @@ SELECT em.employee_id,
         em.salary,
         em.department_id,
         jo.job_title
-FROM employees em, jobs jo
+FROM employees em, jobs jo, departments de
 where em.job_id = jo.job_id
+and em.department_id = de.department_id
 order by em.employee_id asc;
+
 /*
 문제2-1.
 문제2에서 부서가 없는 Kimberely(사번 178)까지 표시해 보세요
@@ -66,7 +68,8 @@ SELECT lo.location_id,
         de.department_name,
         de.department_id
 FROM locations lo left outer join departments de
-on lo.location_id = de.location_id;
+on lo.location_id = de.location_id
+order by lo.location_id asc;
 
 /*
 문제4.
@@ -145,18 +148,21 @@ SELECT de.department_id,
         re.region_name
 FROM departments de, employees em, locations lo, countries co, regions re
 where de.manager_id = em.employee_id
+and de.location_id = lo.location_id
 and lo.country_id = co.country_id
 and co.region_id = re.region_id;
 
 /*
 문제9.
-각 사원(employee)에 대해서 사번(employee_id), 이름(first_name), 부서명(department_name), 매니저(manager)의 이름(first_name)을 조회하세요.
+각 사원(employee)에 대해서 사번(employee_id), 이름(first_name), 부서명(department_name),
+매니저(manager)의 이름(first_name)을 조회하세요.
 부서가 없는 직원(Kimberely)도 표시합니다.
 (106명)
 */
 SELECT em.employee_id,
         em.first_name,
-        em.department_id,
-        ma.first_name
-FROM employees em, employees ma
-where em.employee_id = ma.manager_id;
+        de.department_name,
+        mf.first_name
+FROM employees em left outer join departments de
+on em.employee_id = de.department_id, employees mf
+where em.manager_id = mf.employee_id;
